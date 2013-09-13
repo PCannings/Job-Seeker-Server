@@ -1,7 +1,6 @@
 package itp.team1.jobseekerserver;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Calum
  */
-@WebServlet(name = "JobSeekerServlet", urlPatterns = {"/"})
+@WebServlet(name = "JobSeekerServlet", urlPatterns = {"/search"})
 public class JobSeekerServlet extends HttpServlet 
 {
     /**
@@ -29,6 +28,7 @@ public class JobSeekerServlet extends HttpServlet
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException 
     {
+        response.getOutputStream().print("It Works!\nUse POST to send Job Search details from Phone App...");
     }
 
     /**
@@ -44,9 +44,11 @@ public class JobSeekerServlet extends HttpServlet
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException 
     {
+        // TODO: Get Search parameters/filters
+        // TODO: Query sources: Facebook, Twitter, Indeed
+        // TODO: Returns json array of all "Job" listings.
     }
 
-    
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException 
