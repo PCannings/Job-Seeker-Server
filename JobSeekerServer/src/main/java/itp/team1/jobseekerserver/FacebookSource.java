@@ -29,18 +29,18 @@ public class FacebookSource
     // Graph API Resources
     private static final String GRAPH_API_URL = "http://graph.facebook.com/"; //...queries
     
-    private String[] pages = {"Dundee Jobs | Scotland | UK"};
+    private static String[] pages = {"Dundee+Jobs+|+Scotland+|+UK"};
     
-    public List<Job> retrieveJobs()
+    public static List<Job> retrieveJobs(int n, String title, String location, int radius /* Job.Type type, Job.Industry industry, Job.Hours hours*/)
     {
         List<Job> jobs = new ArrayList<Job>(20);
-        List<FacebookPost> listings = new ArrayList<FacebookPost>(20);
+        List<FacebookPost> listings = new ArrayList<FacebookPost>(n);
         
         // Aggregate all pages results
         for (String page : pages)
         {
             // Make RESTful GET request to Facebook's Graph API.  Returns JSON.
-            String uri = GRAPH_API_URL + "fql?q=SELECT+source_id,+created_time,+message,+placeFROM+stream+WHERE+source_id+IN+(SELECT+page_id+FROM+page+WHERE+name+=\"Dundee+Jobs+|+Scotland+|+UK\")+AND+actor_id+IN+(SELECT+page_id+FROM+page+WHERE+name+=\"Dundee+Jobs+|+Scotland+|+UK\")+AND+type+=+46" +
+            String uri = GRAPH_API_URL + "fql?q=SELECT+source_id,+created_time,+message,+placeFROM+stream+WHERE+source_id+IN+(SELECT+page_id+FROM+page+WHERE+name+=" + page + ")+AND+actor_id+IN+(SELECT+page_id+FROM+page+WHERE+name+=" + page + ")+AND+type+=+46" +
                                          "&access_token=" + FBAPP_ACCESS_TOKEN;
             HttpGet graphGetRequest = new HttpGet(uri);
             
