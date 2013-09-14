@@ -1,6 +1,8 @@
 package itp.team1.jobseekerserver;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -32,44 +34,40 @@ public class JobSeekerServlet extends HttpServlet
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
+        List<Job> allJobListings = new ArrayList<Job>();
+        
         // Get URI Details
         String contextPath = request.getContextPath();
         String requestURI = request.getRequestURI();
         String queryParams = request.getQueryString();  // Filters etc.
-        response.getOutputStream().println("It Works!\nRequest URI: " + requestURI +
-                                                  "\nQuery Params: " + queryParams);
     
-        if (requestURI.equals(contextPath + "/search")
-            || 
-            requestURI.equals(contextPath + "/search/"))
-	{           
+        // Parse URI to implement RESTful interface...
+        // TODO: Use Source superclass to iterate polymorphically over specific Source types
+        if (requestURI.equals(contextPath + "/search"))
+        {           
             // Search ALL sites
-            response.getOutputStream().println("ALL");
         }
-        else if (requestURI.equals(contextPath + "/search/social")
-                || 
-                requestURI.equals(contextPath + "/search/social/"))
+        else if (requestURI.equals(contextPath + "/search/social"))
         {
             // Search Social sites only (FB, Twitter, LI, GumTree)
-            // TODO: Use Source superclass to iterate polymorphically over specific Source types
-            response.getOutputStream().println("SOCIAL");
-            FacebookSource.retrieveJobs(0, "manager", "Dundee", 0); // TODO: Get filters from query string
+            allJobListings.addAll(FacebookSource.retrieveJobs(0, "manager", "Dundee", 0)); // TODO: Get filters from query string
             // Twitter.retrieveJobs
             // LinkedIn.retrieveJobs
         }
-        else if (requestURI.equals(contextPath + "/search/jobsites")
-                || 
-                requestURI.equals(contextPath + "/search/jobsites/"))
+        else if (requestURI.equals(contextPath + "/search/jobsites"))
         {
             // Search Job Sites sites only (Indeed, Monster, S1jobs, )
-            response.getOutputStream().println("JOBSITES");
             // Indeed.retrieveJobs
         }
         else
             return;
         
+        // TODO: Serialise jobs to json to return
+        
+        for (Job job : allJobListings)
+            response.getWriter().print(job.getDescription() + "\n\n");
         // TODO: Returns json array of n "Job" listings.
-
+        
     
     }
 
