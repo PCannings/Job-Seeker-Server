@@ -1,0 +1,18 @@
+
+search?q="Dundee+job"|"Dundee+vacancy"|"Dundee+hiring"&type=page&center=-50,-2&distance=5000
+
+// Get pages within 1km
+SELECT name, page_id, categories, description, general_info 
+FROM page 
+WHERE page_id IN 
+     (SELECT page_id FROM place WHERE 
+        distance(latitude, longitude, "56.458406", "-2.982501") < 1000
+      )
+
+// Get posts from page
+SELECT message FROM stream WHERE source_id IN 
+		(SELECT page_id FROM page WHERE name = "Dundee Jobs | Scotland | UK") 
+		AND actor_id IN 
+		(SELECT page_id FROM page WHERE name = "Dundee Jobs | Scotland | UK")
+
+Dundee Jobs | Scotland | UK

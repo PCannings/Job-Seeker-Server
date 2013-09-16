@@ -1,5 +1,7 @@
 package itp.team1.jobseekerserver;
 
+import itp.team1.jobseekerserver.facebook.FacebookSource;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +52,7 @@ public class JobSeekerServlet extends HttpServlet
         else if (requestURI.equals(contextPath + "/search/social"))
         {
             // Search Social sites only (FB, Twitter, LI, GumTree)
-            allJobListings.addAll(FacebookSource.retrieveJobs(0, "manager", "Dundee", 0)); // TODO: Get filters from query string
+            allJobListings.addAll(FacebookSource.retrieveJobs(20, "manager", "Dundee", 1000)); // TODO: Get filters from query string
             // Twitter.retrieveJobs
             // LinkedIn.retrieveJobs
         }
@@ -64,8 +66,12 @@ public class JobSeekerServlet extends HttpServlet
         
         // TODO: Serialise jobs to json to return
         
+        Gson gson = new Gson();
         for (Job job : allJobListings)
-            response.getWriter().print(job.getDescription() + "\n\n");
+        {
+            String jobJson = gson.toJson(job);
+            response.getWriter().print(jobJson + "\n\n");
+        }
         // TODO: Returns json array of n "Job" listings.
         
     

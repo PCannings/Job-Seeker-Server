@@ -1,4 +1,4 @@
-package itp.team1.jobseekerserver;
+package itp.team1.jobseekerserver.facebook;
 
 import java.io.Serializable;
 
@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Facebook Post
  * @author Calum
  */
-public class FacebookPost implements Serializable
+public class FacebookJobPost implements Serializable
 {
     private String source_id;
     private String created_time;
