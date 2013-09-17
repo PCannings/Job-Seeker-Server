@@ -27,7 +27,7 @@
     
     
     <dependencies>
-        <!-- Spring --> 
+       
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -96,7 +96,7 @@
                 <version>2.1.1</version>
                 <configuration>
                     <outputDirectory>/var/lib/tomcat7/webapps</outputDirectory>
-                    <warName>ROOT/JobSeekerServer</warName>
+                    <warName>JobSeekerServer</warName>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>

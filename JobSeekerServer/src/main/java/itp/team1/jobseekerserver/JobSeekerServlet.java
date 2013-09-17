@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Calum
  */
-@WebServlet(name = "JobSeekerServlet", urlPatterns = { "/search", "/search/*" })
+@WebServlet(name = "JobSeekerServer", urlPatterns = { "/search", "/search/*" })
 public class JobSeekerServlet extends HttpServlet 
 {
     private static final String SEARCH_ALL_STRING = "/search";
