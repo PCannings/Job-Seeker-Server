@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
@@ -37,7 +39,8 @@ public class FacebookSource
     // Graph API Resources
     private static final String GRAPH_API_URL = "https://graph.facebook.com/"; //...queries
     
-//    private static String[] pages = {"Dundee+Jobs+|+Scotland+|+UK"};
+    private static final String LINK_REGEX = "((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[.\\!\\/\\\\w]*))?)";
+    private static final String JOB_REGEX  = "job|vacanc|hiring";
     
     public static List<Job> retrieveJobs(int n, String title, String location, int radius /* Job.Type type, Job.Industry industry, Job.Hours hours*/)
     {
@@ -61,7 +64,22 @@ public class FacebookSource
                 // TODO: Do NLP and more parsing...
                 // TODO: Extract employer, title, link 
                 Job job = new Job();
+                String postMessage = post.getMessage();
+
+                // Check for words e.g. "job"
+                if (!postMessage.toLowerCase().contains("job"))
+                    continue;
+                    
+                // Extract link
+                String link = "";
+                Pattern pattern = Pattern.compile(LINK_REGEX);
+                Matcher matcher = pattern.matcher(postMessage);
+
+                while (matcher.find()) 
+                    link = matcher.group(); 
                 job.setDescription(post.getMessage());
+                job.setExternalLink(link);
+                job.setSource("facebook");
                 jobs.add(job);
             }
             

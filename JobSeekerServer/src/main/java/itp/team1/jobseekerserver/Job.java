@@ -14,6 +14,7 @@ public class Job implements Serializable
     private String openingDate;
     private String description;
     private String externalLink;
+    private String source;
     //    private String closingDate;
     //    private String hours;
     //    private String industry;
@@ -69,4 +70,13 @@ public class Job implements Serializable
     public void setExternalLink(String externalLink) {
         this.externalLink = externalLink;
     }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
 }
