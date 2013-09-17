@@ -13,8 +13,10 @@ public class Job implements Serializable
     private String location;
     private String openingDate;
     private String description;
-    private String externalLink;
+    private String url;
     private String source;
+    private String timestamp;
+//    private String pageName;
     //    private String closingDate;
     //    private String hours;
     //    private String industry;
@@ -63,12 +65,12 @@ public class Job implements Serializable
         this.description = description;
     }
 
-    public String getExternalLink() {
-        return externalLink;
+    public String getURL() {
+        return url;
     }
 
-    public void setExternalLink(String externalLink) {
-        this.externalLink = externalLink;
+    public void setURL(String externalLink) {
+        this.url = externalLink;
     }
 
     public String getSource() {
@@ -79,4 +81,12 @@ public class Job implements Serializable
         this.source = source;
     }
 
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+    
 }

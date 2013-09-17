@@ -53,7 +53,7 @@ public class FacebookSource
         ListIterator<FacebookPage> iter = pages.listIterator();
         while (iter.hasNext())
         {
-            // Make RESTful GET request to Facebook's Graph API.  Returns JSON.
+            // Make RESTful GET request to Facebook's Graph API.  Returns JSON posts in each page.
             
             String page = iter.next().getName();
             List<FacebookJobPost> fbPageJobLstings = findJobs(page);
@@ -67,19 +67,20 @@ public class FacebookSource
                 String postMessage = post.getMessage();
 
                 // Check for words e.g. "job"
-                if (!postMessage.toLowerCase().contains("job"))
+                if (!(postMessage.toLowerCase().contains("job") || postMessage.toLowerCase().contains("vacanc")))
                     continue;
                     
                 // Extract link
                 String link = "";
                 Pattern pattern = Pattern.compile(LINK_REGEX);
                 Matcher matcher = pattern.matcher(postMessage);
-
                 while (matcher.find()) 
                     link = matcher.group(); 
+                
                 job.setDescription(post.getMessage());
-                job.setExternalLink(link);
+                job.setURL(link);
                 job.setSource("facebook");
+                job.setTimestamp(post.getCreated_time());
                 jobs.add(job);
             }
             
@@ -100,9 +101,7 @@ public class FacebookSource
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = client.execute(getPagesRequest);
             InputStreamReader streamReader = new InputStreamReader(response.getEntity().getContent());
-//            char[] json = new char[10000];
-//            streamReader.read(json);
-//            String jsonS = json.toString();
+            
             // Parse JSON into FacebookPageResponse object
             Gson gson = new Gson();
             pageResponse = (FacebookPageResponse) gson.fromJson(streamReader, FacebookPageResponse.class);
