@@ -8,20 +8,22 @@ import java.io.Serializable;
  */
 public class Job implements Serializable
 {
-    private String employer;
-    private String title;
-    private String location;
-    private String openingDate;
-    private String description;
-    private String url;
-    private String source;
-    private String timestamp;
-//    private String pageName;
-    //    private String closingDate;
-    //    private String hours;
-    //    private String industry;
-    //    private String type
-    //    private String
+    private String  description;
+    private String  url;
+    private String  source;
+    private long    timestamp;
+    
+    private String  employer;
+    private String  title;
+    private String  location;
+    private double  latitude;
+    private double  longitude;
+    private String  openingDate;
+    private String pageName;
+    private String closingDate;
+    private String hours;
+    private String industry;
+    private String type;
     
     // -----Getters & Setters------
 
@@ -81,12 +83,69 @@ public class Job implements Serializable
         this.source = source;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getPageName() {
+        return pageName;
+    }
+
+    public void setPageName(String pageName) {
+        this.pageName = pageName;
+    }
+
+    public String getClosingDate() {
+        return closingDate;
+    }
+
+    public void setClosingDate(String closingDate) {
+        this.closingDate = closingDate;
+    }
+
+    public String getHours() {
+        return hours;
+    }
+
+    public void setHours(String hours) {
+        this.hours = hours;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+    
     
 }

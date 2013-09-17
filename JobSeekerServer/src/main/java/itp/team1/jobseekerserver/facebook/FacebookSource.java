@@ -80,7 +80,7 @@ public class FacebookSource
                 job.setDescription(post.getMessage());
                 job.setURL(link);
                 job.setSource("facebook");
-                job.setTimestamp(post.getCreated_time());
+                job.setTimestamp(Long.parseLong(post.getCreated_time()));
                 jobs.add(job);
             }
             
