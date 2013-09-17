@@ -96,7 +96,7 @@
                 <version>2.1.1</version>
                 <configuration>
                     <outputDirectory>/var/lib/tomcat7/webapps</outputDirectory>
-                    <warName>ROOT</warName>
+                    <warName>ROOT/JobSeekerServer</warName>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
