@@ -2,10 +2,8 @@ package itp.team1.jobseekerserver;
 
 import itp.team1.jobseekerserver.facebook.FacebookSource;
 import com.google.gson.Gson;
-import com.sun.jndi.toolkit.url.Uri;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -22,8 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 public class JobSeekerServlet extends HttpServlet 
 {
     private static final String SEARCH_ALL_STRING = "/search";
-    private static final String SEARCH_SOCIAL_STRING = "/search/social";
-    private static final String SEARCH_JOBSITES_STRING = "/search/jobsites";
+    private static final String SEARCH_SOCIAL_STRING = SEARCH_ALL_STRING + "/social";
+    private static final String SEARCH_JOBSITES_STRING = SEARCH_ALL_STRING + "/jobsites";
     
     public JobSeekerServlet()
     {
@@ -58,7 +56,7 @@ public class JobSeekerServlet extends HttpServlet
         int n = 20; 
         int radius = 10000;
         String title    = "";
-        String location = "Dundee";
+        String location = "dundee";
         String hours    = "";
         String industry = "";
         String employer = "";

@@ -1,16 +1,9 @@
 package itp.team1.jobseekerserver.facebook;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import itp.team1.jobseekerserver.Job;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +27,20 @@ public class FacebookSource
     // FB App Credentials
     private static final String APP_ID             = "631489563562471";
     private static final String APP_SECRET         = "ed5d59160530f4be7908fcfc5ef1f7bc";
-    private static final String FBAPP_ACCESS_TOKEN = "631489563562471%7CnuU6UcCwY9mL28PbnozLlvtvtxA";
+    private static final String FBAPP_ACCESS_TOKEN = "631489563562471|nuU6UcCwY9mL28PbnozLlvtvtxA";
     
     // Graph API Resources
     private static final String GRAPH_API_URL = "https://graph.facebook.com/"; //...queries
-    
+    private static final String POSTS_FQL_STATEMENT = "SELECT message, created_time, attachment FROM stream WHERE source_id = 'page_id' AND (type = 46 OR type = 80);";
+    private static final String PAGES_GRAPH_STATEMENT = "search?q=%22Dundee+job%22&type=page";
+
+            
+    // Regex/Parsing
     private static final String LINK_REGEX = "((([A-Za-z]{3,9}:(?:\\/\\/)?)(?:[-;:&=\\+\\$,\\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\\+\\$,\\w]+@)[A-Za-z0-9.-]+)((?:\\/[\\+~%\\/.\\w-_]*)?\\??(?:[-\\+=&;%@.\\w_]*)#?(?:[.\\!\\/\\\\w]*))?)";
-    private static final String JOB_REGEX  = "job|vacanc|hiring";
+    private static final String JOB_REGEX  = "job|vacanc|hiring|experience|work|full-time|part-time|er|tor|cian|tant|ist|tive";
     
+    // Static method to encapsulate process of returning list of jobs to servlet
+    // Delegates to "findRelevantFBPages" and "findPostsInPage"
     public static List<Job> retrieveJobs(int n, String title, String location, int radius /* Job.Type type, Job.Industry industry, Job.Hours hours*/)
     {
         List<Job> jobs = new ArrayList<Job>(n);
@@ -53,10 +52,9 @@ public class FacebookSource
         ListIterator<FacebookPage> iter = pages.listIterator();
         while (iter.hasNext())
         {
-            // Make RESTful GET request to Facebook's Graph API.  Returns JSON posts in each page.
-            
-            String page = iter.next().getName();
-            List<FacebookJobPost> fbPageJobLstings = findJobs(page);
+            // Make RESTful GET request to Facebook's Graph API.  Returns JSON posts in each page...
+            FacebookPage page = iter.next();
+            List<FacebookJobPost> fbPageJobLstings = findPostsInPage(page);
             
             // Instantiate "Job" objects from "FacebookJobPost"s - Add to "jobs" list
             for (FacebookJobPost post : fbPageJobLstings)
@@ -64,23 +62,32 @@ public class FacebookSource
                 // TODO: Do NLP and more parsing...
                 // TODO: Extract employer, title, link 
                 Job job = new Job();
-                String postMessage = post.getMessage();
+                
+                String attachmentName = post.getAttachment().getName();
+                String postMessage = (attachmentName == null) ? post.getMessage() : attachmentName;
 
                 // Check for words e.g. "job"
-                if (!(postMessage.toLowerCase().contains("job") || postMessage.toLowerCase().contains("vacanc")))
+                if (!matchesPattern(Pattern.compile(JOB_REGEX), postMessage) ||
+                        postMessage.contains("Hi") || postMessage.contains("hi"))
                     continue;
                     
                 // Extract link
                 String link = "";
+                String attachmentLink = post.getAttachment().getHref();
                 Pattern pattern = Pattern.compile(LINK_REGEX);
                 Matcher matcher = pattern.matcher(postMessage);
                 while (matcher.find()) 
                     link = matcher.group(); 
+                link = (attachmentLink == null) ? link : attachmentLink;
                 
-                job.setDescription(post.getMessage());
+                if (link.equals(""))
+                    continue;
+                
+                // Create job
+                job.setDescription(postMessage);
                 job.setURL(link);
                 job.setSource("facebook");
-                job.setTimestamp(Long.parseLong(post.getCreated_time()));
+                job.setTimestamp(post.getCreated_time());
                 jobs.add(job);
             }
             
@@ -88,15 +95,17 @@ public class FacebookSource
         return jobs;
     }
 
+    // Get all PAGES in "location" e.g. Dundee
     private static List<FacebookPage> findRelevantFBPages(String location, int radius) 
     {
-        String pagesUri = GRAPH_API_URL + "search?q=%22" + location + "+job%22%7C%22" + location + "+vacancy%22%7C%22" + location + "+hiring%22&type=page&center=-50%2C-2&distance=" + radius + "&access_token=" + FBAPP_ACCESS_TOKEN;
-        FacebookPageResponse pageResponse;
-        
-        HttpGet getPagesRequest = new HttpGet(pagesUri);
+        FacebookPageResponse pageResponse = null;
 
         try 
         {
+            String pagesUri = GRAPH_API_URL + "search?q=%22" + location + "+job%22&type=page&access_token=" + URLEncoder.encode(FBAPP_ACCESS_TOKEN, "UTF-8");
+
+            HttpGet getPagesRequest = new HttpGet(pagesUri);
+
             // Execute GET request
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = client.execute(getPagesRequest);
@@ -117,22 +126,18 @@ public class FacebookSource
         return pageResponse.getData();
 
     }
-          
-    private static List<FacebookJobPost> findJobs(String page)
+        
+    // Find job posts within the page name
+    private static List<FacebookJobPost> findPostsInPage(FacebookPage page)
     {
         FacebookJobResponse jobJsonResponse;
         List<FacebookJobPost> listings = new ArrayList<FacebookJobPost>();
-        HttpGet graphGetRequest = null;
-        try {
-            String uri = GRAPH_API_URL + "fql?q=SELECT%20source_id%2C%20created_time%2C%20message%2C%20place%20FROM%20stream%20WHERE%20source_id%20IN%20(SELECT%20page_id%20FROM%20page%20WHERE%20name%20%3D%20%22" + URLEncoder.encode(page, "UTF-8") + "%22)%20AND%20actor_id%20IN%20(SELECT%20page_id%20FROM%20page%20WHERE%20name%20%3D%20%22" + URLEncoder.encode(page, "UTF-8") + "%22)%20AND%20type%20%3D%2046&access_token=" + FBAPP_ACCESS_TOKEN;
-            graphGetRequest = new HttpGet(uri);
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(FacebookSource.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-                    
+     
         try 
         {
+            String uri = GRAPH_API_URL + "fql?q=" + URLEncoder.encode("SELECT message, created_time, attachment FROM stream WHERE source_id = " + page.getId() + " AND (type = 46 OR type = 80)", "UTF-8") + "&access_token=" + URLEncoder.encode(FBAPP_ACCESS_TOKEN, "UTF-8");
+            HttpGet graphGetRequest = new HttpGet(uri);
+
             // Execute GET request
             HttpClient client = new DefaultHttpClient();
             HttpResponse response = client.execute(graphGetRequest);
@@ -150,6 +155,13 @@ public class FacebookSource
         } 
         // Return job listings for page
         return jobJsonResponse.getData();
+    }
+    
+    // Checks if sentence matches a regex p.  
+    // Adapted from http://stackoverflow.com/questions/9515635/using-java-regex-how-to-check-if-a-string-contains-any-of-the-words-in-a-set
+    private static boolean matchesPattern(Pattern p, String sentence) 
+    {
+        return p.matcher(sentence).find();
     }
     
 }

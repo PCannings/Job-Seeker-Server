@@ -9,24 +9,15 @@ import java.io.Serializable;
  */
 public class FacebookJobPost implements Serializable
 {
-    private String source_id;
-    private String created_time;
+    private long created_time;
     private String message;
-    private String place;       // NB: Often null
-
-    public String getSource_id() {
-        return source_id;
-    }
-
-    public void setSource_id(String source_id) {
-        this.source_id = source_id;
-    }
-
-    public String getCreated_time() {
+    private FacebookAttachment attachment;
+    
+    public long getCreated_time() {
         return created_time;
     }
 
-    public void setCreated_time(String created_time) {
+    public void setCreated_time(long created_time) {
         this.created_time = created_time;
     }
 
@@ -38,12 +29,12 @@ public class FacebookJobPost implements Serializable
         this.message = message;
     }
 
-    public String getPlace() {
-        return place;
+    public FacebookAttachment getAttachment() {
+        return attachment;
     }
 
-    public void setPlace(String place) {
-        this.place = place;
+    public void setAttachment(FacebookAttachment attachment) {
+        this.attachment = attachment;
     }
     
     
