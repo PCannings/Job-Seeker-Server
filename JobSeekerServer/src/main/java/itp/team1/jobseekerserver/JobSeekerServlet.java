@@ -104,7 +104,7 @@ public class JobSeekerServlet extends HttpServlet
         // Serialise jobs to json to return
         // TODO: Add Message
         Gson gson = new Gson();
-        String allJobsJson = gson.toJson(allJobListings);
+        String allJobsJson = "{\"jobs\":" + gson.toJson(allJobListings) + "}";
         response.getWriter().print(allJobsJson);
     }
 
