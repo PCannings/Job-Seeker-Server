@@ -23,15 +23,15 @@ public class DatabaseConnector
 
     public DatabaseConnector() 
     {
-        String dbname = "jdbc/JobSeekerDB";
+        String dbName = "jdbc/JobSeekerDB";
 
         try 
         {
-            ds = (DataSource) new InitialContext().lookup("java:comp/env/" + dbname);
+            ds = (DataSource) new InitialContext().lookup("java:comp/env/" + dbName);
         } 
         catch (NamingException e) 
         {
-            System.err.println(dbname + " is missing: " + e.toString());
+            System.err.println(dbName + " is missing: " + e.toString());
         }
     }
 

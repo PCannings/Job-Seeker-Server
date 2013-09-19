@@ -60,6 +60,8 @@ public class Job implements Serializable
     }
 
     public String getDescription() {
+        if (description == null || description.equals(""))
+            return title + " - " + employer;
         return description;
     }
 

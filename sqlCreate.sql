@@ -18,7 +18,7 @@ USE `JobSeekerDB` ;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `JobSeekerDB`.`SocialJobs` (
+CREATE  TABLE IF NOT EXISTS `JobSeekerDB`.`socialjobs` (
 
   `id` INT NOT NULL AUTO_INCREMENT ,
 
@@ -34,7 +34,7 @@ CREATE  TABLE IF NOT EXISTS `JobSeekerDB`.`SocialJobs` (
 
   PRIMARY KEY (`id`) ,
 
-  INDEX `idx_timestamp` (`timestamp` ASC) )
+  INDEX `idx_timestamp` (`timestamp` ASC) ) 
 
 ENGINE = InnoDB;
 
@@ -48,7 +48,7 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `JobSeekerDB`.`Jobs` (
+CREATE  TABLE IF NOT EXISTS `JobSeekerDB`.`jobs` (
 
   `id` INT NOT NULL AUTO_INCREMENT ,
 
@@ -80,15 +80,15 @@ CREATE  TABLE IF NOT EXISTS `JobSeekerDB`.`Jobs` (
 
   PRIMARY KEY (`id`) ,
 
-  INDEX `idx_timestamp` (`timestamp` ASC) )
+  INDEX `idx_timestamp` (`timestamp` ASC) ) 
 
 ENGINE = InnoDB;
 
+ALTER TABLE `JobSeekerDB`.`socialjobs` ADD UNIQUE `url_UNIQUE` (url(50));
+ALTER TABLE `JobSeekerDB`.`jobs` ADD UNIQUE `url_UNIQUE` (url(50));
 
 
 USE `JobSeekerDB` ;
-
-
 
 
 
