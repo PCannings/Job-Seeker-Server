@@ -8,17 +8,17 @@ import java.io.Serializable;
  */
 public class Job implements Serializable
 {
-    private String  description;
-    private String  url;
-    private String  source;
-    private long    timestamp;
+    private String description;
+    private String url;
+    private String source;
+    private long   timestamp;
     
-    private String  employer;
-    private String  title;
-    private String  location;
-    private double  latitude;
-    private double  longitude;
-    private String  openingDate;
+    private String employer;
+    private String title;
+    private String city;
+    private double latitude;
+    private double longitude;
+    private String openingDate;
     private String pageName;
     private String closingDate;
     private String hours;
@@ -43,12 +43,12 @@ public class Job implements Serializable
         this.title = title;
     }
 
-    public String getLocation() {
-        return location;
+    public String getCity() {
+        return city;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setCity(String location) {
+        this.city = location;
     }
 
     public String getOpeningDate() {

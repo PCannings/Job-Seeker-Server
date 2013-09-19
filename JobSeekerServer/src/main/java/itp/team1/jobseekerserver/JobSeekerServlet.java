@@ -1,6 +1,8 @@
 package itp.team1.jobseekerserver;
 
 import itp.team1.jobseekerserver.facebook.FacebookSource;
+import itp.team1.jobseekerserver.twitter.TwitterSource;
+
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ public class JobSeekerServlet extends HttpServlet
      * GET /search/social
      * GET /search/jobsites 
      * GET /search  (ALL)
-     * Query Params: title, location, radius, hours, type, industry, n (number)
+     * Query Params: offset, limit, location,  (title, hours, type, industry)
      * ---------------------------------
      * @param request servlet request
      * @param response servlet response
@@ -45,64 +47,123 @@ public class JobSeekerServlet extends HttpServlet
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException
     {
-        List<Job> allJobListings = new ArrayList<Job>();
+        List<Job> allJobListings   = new ArrayList<Job>();
+        List<Job> socialJobs       = new ArrayList<Job>();
+        List<Job> conventionalJobs = new ArrayList<Job>();
         response.setContentType("application/json");
+        
+        // DB Instantiation
+        ConcreteDBConnector database = new ConcreteDBConnector();
         
         // Get URI Details
         String contextPath = request.getContextPath();
         String requestURI = request.getRequestURI();
         
-        // Parse Filters etc.
-        int n = 20; 
-        int radius = 10000;
+        // Parse query params - meta + Filters etc.
+        int offset      = -1;
+        int limit       = -1;
         String title    = "";
-        String location = "dundee";
+        String location = "";
         String hours    = "";
         String industry = "";
         String employer = "";
         String type     = "";
-        String[] nParam = request.getParameterValues("n");
-        if (nParam != null) n = Integer.parseInt(nParam[0]);
+        String[] offsetParam    = request.getParameterValues("offset");
+        if (offsetParam != null)    offset = Integer.parseInt(offsetParam[0]);
+        String[] limitParam = request.getParameterValues("limit");
+        if (limitParam != null)     limit = Integer.parseInt(limitParam[0]);
         String[] titleParams    = request.getParameterValues("title");
-        if (titleParams != null) title = titleParams[0];
+        if (titleParams != null)    title = titleParams[0];
         String[] locationParams = request.getParameterValues("location");
         if (locationParams != null) location = locationParams[0];
         String[] hoursParams    = request.getParameterValues("hours");
-        if (hoursParams != null) hours = hoursParams[0];
+        if (hoursParams != null)    hours = hoursParams[0];
         String[] industryParams = request.getParameterValues("industry");
         if (industryParams != null) industry = industryParams[0];
         String[] employerParams = request.getParameterValues("employer");
         if (employerParams != null) employer = employerParams[0];
         String[] typeParams     = request.getParameterValues("type");
-        if (typeParams != null) type = typeParams[0];
+        if (typeParams != null)     type = typeParams[0];
 
         // Parse URI to implement RESTful interface...
         // TODO: Use Source superclass to iterate polymorphically over specific Source types
         if (requestURI.equals(contextPath + SEARCH_ALL_STRING))
-        {           
+        {                 
             // Search ALL sites...
-            allJobListings.addAll(FacebookSource.retrieveJobs(n, title, location, radius)); // TODO: Get filters from query string
+            
+            if (offset == -1 && limit == -1) // Daily update - None specified
+            {
+                // 1. Get ALL results from ALL sources
+                socialJobs.addAll(FacebookSource.retrieveAllJobs(location)); // TODO: Get filters from query string
+//                socialJobs.addAll(TwitterSource.retrieveAllJobs(location));
+//                conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location));
+                
+                // 2. Add to DB (batch insert)
+//                database.insertSocialJobs(socialJobs);
+//                database.insertConventionalJobs(conventionalJobs);
+                
+                //TODO: remove
+                allJobListings.addAll(socialJobs);
+                //return; // Don't return any jobs to client
+            }
+            else if (offset == 0) // App refresh
+            {
+                // 1. Get new results from ALL sources (should be one location only)
+                socialJobs.addAll(FacebookSource.retrieveAllJobs(location));
+//                socialJobs.addAll(TwitterSource.retrieveAllJobs(location));
+//                conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location));
+                
+                // 2. Insert to DB
+//                database.insertSocialJobs(socialJobs);
+//                database.insertConventionalJobs(conventionalJobs);
 
+                // 3. Retrieve <limit> latest results
+//                allJobListings.addAll(database.getRecentJobs(limit, limit, location, title));
+            }
+            else 
+            {
+                // 1. Retrieve latest <offset> - <limit> results from DB
+//                allJobListings.addAll(database.getRecentJobs(offset, limit, location, title));
+            }
         }
         else if (requestURI.equals(contextPath + SEARCH_SOCIAL_STRING))
         {
             // Search Social sites only (FB, Twitter, LI, GumTree)...
-            
-            allJobListings.addAll(FacebookSource.retrieveJobs(n, title, location, radius)); // TODO: Get filters from query string
-            // Twitter.retrieveJobs
-            // LinkedIn.retrieveJobs
+            if (offset == -1 && limit == -1)
+            {
+                // 1. Get ALL results from SOCIAL sources
+                allJobListings.addAll(FacebookSource.retrieveAllJobs(location)); // TODO: Get filters from query string
+//                allJobListings.addAll(TwitterSource.retrieveAllJobs(location));
+                
+                // 2. Add to DB (batch insert)
+//                database.insertSocialJobs(allJobListings);
+            }
+            else if (offset == 0)
+            {
+                // 1. Get new results from SOCIAL sources
+                allJobListings.addAll(FacebookSource.retrieveAllJobs(location));
+                // 2. Insert to DB
+                // 3. Retrieve <limit> latest results
+            }
+            else
+            {
+                
+            }
         }
         else if (requestURI.equals(contextPath + SEARCH_JOBSITES_STRING))
         {
             // Search Job Sites sites only (Indeed, Monster, S1jobs, )...
             
-            // Indeed.retrieveJobs
+//            allJobListings.addAll(IndeedSource.retrieveAllJobs(location));
         }
         else
+        {
+            response.getWriter().print("{\"jobs\":[{\"error\":\"URL Malformed\"}]");
             return;
+        }
         
         // Serialise jobs to json to return
-        // TODO: Add Message
+        // TODO: Add Status Message
         Gson gson = new Gson();
         String allJobsJson = "{\"jobs\":" + gson.toJson(allJobListings) + "}";
         response.getWriter().print(allJobsJson);
@@ -134,5 +195,6 @@ public class JobSeekerServlet extends HttpServlet
             throws ServletException, IOException 
     {
     }
+
 
 }

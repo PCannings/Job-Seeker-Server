@@ -1,26 +1,90 @@
-//
-//package itp.team1.jobseekerserver;
-//
-//import java.sql.Connection;
-//import java.sql.PreparedStatement;
-//import java.sql.ResultSet;
-//import java.sql.SQLException;
-//import java.sql.Statement;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.logging.Level;
-//import java.util.logging.Logger;
-//
-///**
-// *
-// * @author Calum
-// */
-//public class ConcreteDBConnector extends DatabaseConnector 
-//{
-//    public ConcreteDBConnector()
-//    {
-//        super();
-//    }
+
+package itp.team1.jobseekerserver;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author Calum
+ * Batch insert code adapted from http://viralpatel.net/blogs/batch-insert-in-java-jdbc/
+ */
+public class ConcreteDBConnector extends DatabaseConnector 
+{
+    public ConcreteDBConnector()
+    {
+        super();
+    }
+    
+    public void insertSocialJobs(List<Job> jobs)
+    {
+        try 
+        {
+            Connection connection = getConnection();
+            String query = "INSERT INTO SocialJobs (description, url, source, timestamp) VALUES(?, ?, ?, ?);";
+            PreparedStatement prepStmt = connection.prepareStatement(query);
+            
+            for (Job job : jobs) 
+            {
+                prepStmt.setString(1, job.getDescription());
+                prepStmt.setString(2, job.getURL());
+                prepStmt.setString(3, job.getSource());
+                prepStmt.setTimestamp(4, new Timestamp(job.getTimestamp()));
+
+                prepStmt.addBatch();
+            }
+            prepStmt.executeBatch();
+            prepStmt.close();
+            connection.close();
+        }
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(ConcreteDBConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void insertConventionalJobs(List<Job> jobs)
+    {
+       try 
+        {
+            Connection connection = getConnection();
+            String query = "INSERT INTO SocialJobs (description, url, source, timestamp) VALUES(?, ?, ?, ?);";
+            PreparedStatement prepStmt = connection.prepareStatement(query);
+            
+            for (Job job : jobs) 
+            {
+                prepStmt.setString(1, job.getDescription());
+                prepStmt.setString(2, job.getURL());
+                prepStmt.setString(3, job.getSource());
+                prepStmt.setTimestamp(4, new Timestamp(job.getTimestamp()));
+
+                prepStmt.addBatch();
+            }
+            prepStmt.executeBatch();
+            prepStmt.close();
+            connection.close();
+        }
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(ConcreteDBConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public List<Job> getRecentJobs(int id, int n, String location, String title)
+    {
+        return null;
+        // Call stored procedure
+    }
+    
+}
 //    public List<Job> getJobsAfterTimestamp(long timestamp)
 //    {
 //        Connection connection = getConnection();

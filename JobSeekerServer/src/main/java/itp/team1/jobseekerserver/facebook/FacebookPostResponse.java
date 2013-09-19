@@ -6,11 +6,11 @@ import java.util.List;
  *
  * @author Calum
  */
-public class FacebookJobResponse 
+public class FacebookPostResponse 
 {
-    private List<FacebookJobPost> data;
+    private List<FacebookPost> data;
     
-    public List<FacebookJobPost> getData() {
+    public List<FacebookPost> getData() {
         return data;
     }
 }

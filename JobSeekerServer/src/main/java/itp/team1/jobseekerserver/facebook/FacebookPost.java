@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Facebook Post
  * @author Calum
  */
-public class FacebookJobPost implements Serializable
+public class FacebookPost implements Serializable
 {
     private long created_time;
     private String message;

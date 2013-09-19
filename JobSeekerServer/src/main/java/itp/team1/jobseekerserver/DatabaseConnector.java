@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 
 /**
  *
- * @author Neil
+ * @author 
  */
 public class DatabaseConnector 
 {
