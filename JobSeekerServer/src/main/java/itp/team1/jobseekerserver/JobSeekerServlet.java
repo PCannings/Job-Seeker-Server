@@ -94,7 +94,7 @@ public class JobSeekerServlet extends HttpServlet
             if (offset == -1 && limit == -1) // Daily update - None specified
             {
                 // 1. Get ALL results from ALL sources
-                socialJobs.addAll(FacebookSource.retrieveAllJobs(location)); // TODO: Get filters from query string
+                socialJobs.addAll(FacebookSource.retrieveAllJobs(location, limit)); // TODO: Get filters from query string
 //                socialJobs.addAll(TwitterSource.retrieveAllJobs(location));
 //                conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location));
                 
@@ -109,21 +109,24 @@ public class JobSeekerServlet extends HttpServlet
             else if (offset == 0) // App refresh
             {
                 // 1. Get new results from ALL sources (should be one location only)
-                socialJobs.addAll(FacebookSource.retrieveAllJobs(location));
+                socialJobs.addAll(FacebookSource.retrieveAllJobs(location, limit));
 //                socialJobs.addAll(TwitterSource.retrieveAllJobs(location));
 //                conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location));
                 
                 // 2. Insert to DB
-//                database.insertSocialJobs(socialJobs);
+                database.insertSocialJobs(socialJobs);
 //                database.insertConventionalJobs(conventionalJobs);
 
                 // 3. Retrieve <limit> latest results
-//                allJobListings.addAll(database.getRecentJobs(limit, limit, location, title));
+                allJobListings.addAll(database.getRecentSocialJobs(offset, limit, location, title));
+//                allJobListings.addAll(database.getRecentConventionalJobs(offset, limit, location, title));
             }
             else 
             {
                 // 1. Retrieve latest <offset> - <limit> results from DB
-//                allJobListings.addAll(database.getRecentJobs(offset, limit, location, title));
+                allJobListings.addAll(database.getRecentSocialJobs(offset, limit, location, title));
+//                allJobListings.addAll(database.getRecentConventionalJobs(offset, limit, location, title));
+
             }
         }
         else if (requestURI.equals(contextPath + SEARCH_SOCIAL_STRING))
@@ -132,7 +135,7 @@ public class JobSeekerServlet extends HttpServlet
             if (offset == -1 && limit == -1)
             {
                 // 1. Get ALL results from SOCIAL sources
-                allJobListings.addAll(FacebookSource.retrieveAllJobs(location)); // TODO: Get filters from query string
+                allJobListings.addAll(FacebookSource.retrieveAllJobs(location, limit)); // TODO: Get filters from query string
 //                allJobListings.addAll(TwitterSource.retrieveAllJobs(location));
                 
                 // 2. Add to DB (batch insert)
@@ -141,7 +144,7 @@ public class JobSeekerServlet extends HttpServlet
             else if (offset == 0)
             {
                 // 1. Get new results from SOCIAL sources
-                allJobListings.addAll(FacebookSource.retrieveAllJobs(location));
+                allJobListings.addAll(FacebookSource.retrieveAllJobs(location, limit));
                 // 2. Insert to DB
                 // 3. Retrieve <limit> latest results
             }
@@ -164,9 +167,9 @@ public class JobSeekerServlet extends HttpServlet
         
         // Serialise jobs to json to return
         // TODO: Add Status Message
-        Gson gson = new Gson();
-        String allJobsJson = "{\"jobs\":" + gson.toJson(allJobListings) + "}";
-        response.getWriter().print(allJobsJson);
+            Gson gson = new Gson();
+            String allJobsJson = "{\"jobs\":" + gson.toJson(allJobListings) + "}";
+            response.getWriter().print(allJobsJson);
     }
 
     @Override

@@ -42,7 +42,7 @@ public class FacebookSource
     // Static method to encapsulate process of returning list of jobs to servlet
     // Checks ALL pages within ALL cities
     // Delegates to "findRelevantFBPages" and "findPostsInPage"
-    public static List<Job> retrieveAllJobs(String location)
+    public static List<Job> retrieveAllJobs(String location, int limit)
     {
         List<Job> jobs = new ArrayList<Job>(100);
         String[] cities;

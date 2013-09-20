@@ -31,7 +31,7 @@ public class ConcreteDBConnector extends DatabaseConnector
         {
             Connection connection = getConnection();
             String query = "INSERT INTO socialjobs (description, url, `source`, `timestamp`, city) VALUES(?, ?, ?, ?, ?)"
-                         + "ON DUPLICATE KEY UPDATE url=url;";
+                         + "ON DUPLICATE KEY UPDATE id=id, url=url;";
             PreparedStatement prepStmt = connection.prepareStatement(query);
             
             for (Job job : jobs) 
@@ -60,7 +60,7 @@ public class ConcreteDBConnector extends DatabaseConnector
         {
             Connection connection = getConnection();
             String query = "INSERT INTO jobs (employer, title, city, `timestamp`, url, `source`, description) VALUES(?, ?, ?, ?, ?, ?, ?);"
-                         + "ON DUPLICATE KEY UPDATE url=url;";
+                         + "ON DUPLICATE KEY UPDATE id=id, url=url;";
             PreparedStatement prepStmt = connection.prepareStatement(query);
             
             for (Job job : jobs) 
@@ -91,13 +91,28 @@ public class ConcreteDBConnector extends DatabaseConnector
         try 
         {
             Connection connection = getConnection();
-            String query = "SELECT * FROM socialjobs GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?;";
-            PreparedStatement prepStmt = connection.prepareStatement(query);
+            String query = "";
+            PreparedStatement prepStmt;
 
-            prepStmt.setInt(1, limit);
+            // Specific locations or not
+            if (location.equals(""))
+            {
+                query = "SELECT * FROM socialjobs GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                prepStmt = connection.prepareStatement(query);
+                prepStmt.setInt(1, offset);
+                prepStmt.setInt(2, limit);
+            }
+            else
+            {
+                query = "SELECT * FROM socialjobs WHERE city = ? GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                prepStmt = connection.prepareStatement(query);
+                prepStmt.setString(1, location);
+                prepStmt.setInt(2, offset);
+                prepStmt.setInt(3, limit);
+            }
             
+            // Execute
             ResultSet jobResults = prepStmt.executeQuery();
-            
             
             while (jobResults.next())
             {
@@ -129,11 +144,27 @@ public class ConcreteDBConnector extends DatabaseConnector
         try 
         {
             Connection connection = getConnection();
-            String query = "SELECT * FROM jobs GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?;";
-            PreparedStatement prepStmt = connection.prepareStatement(query);
+            String query = "";
+            PreparedStatement prepStmt;
 
-            prepStmt.setInt(1, limit);
+            // Specific locations or not
+            if (location.equals(""))
+            {
+                query = "SELECT * FROM jobs GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                prepStmt = connection.prepareStatement(query);
+                prepStmt.setInt(1, offset);
+                prepStmt.setInt(2, limit);
+            }
+            else
+            {
+                query = "SELECT * FROM jobs WHERE city = ? GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                prepStmt = connection.prepareStatement(query);
+                prepStmt.setString(1, location);
+                prepStmt.setInt(2, offset);
+                prepStmt.setInt(3, limit);
+            }
             
+            // Execute
             ResultSet jobResults = prepStmt.executeQuery();
             
             while (jobResults.next())
@@ -174,7 +205,7 @@ public class ConcreteDBConnector extends DatabaseConnector
             PreparedStatement prepConvStmt   = connection.prepareStatement(conventionalQuery);
 
             prepSocialStmt.setInt(1, DAY_AGE_TO_DELETE);
-            prepConvStmt.setInt(1, DAY_AGE_TO_DELETE);
+            prepConvStmt.setInt(  1, DAY_AGE_TO_DELETE);
 
             boolean success = prepSocialStmt.execute() && prepConvStmt.execute();
             
