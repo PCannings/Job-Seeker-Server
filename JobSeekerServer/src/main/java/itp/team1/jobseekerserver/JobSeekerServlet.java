@@ -99,7 +99,7 @@ public class JobSeekerServlet extends HttpServlet
 //                conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location));
                 
                 // 2. Add to DB (batch insert)
-//                database.insertSocialJobs(socialJobs);
+                database.insertSocialJobs(socialJobs);
 //                database.insertConventionalJobs(conventionalJobs);
                 
                 //TODO: remove

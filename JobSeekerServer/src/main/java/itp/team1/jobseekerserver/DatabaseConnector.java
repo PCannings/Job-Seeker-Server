@@ -23,7 +23,7 @@ public class DatabaseConnector
 
     public DatabaseConnector() 
     {
-        String dbName = "jdbc/JobSeekerDB";
+        String dbName = "jdbc/jobseekerdb";
 
         try 
         {

@@ -18,6 +18,8 @@ import java.util.logging.Logger;
  */
 public class ConcreteDBConnector extends DatabaseConnector 
 {
+    private static final int DAY_AGE_TO_DELETE = 7;
+    
     public ConcreteDBConnector()
     {
         super();
@@ -28,7 +30,8 @@ public class ConcreteDBConnector extends DatabaseConnector
         try 
         {
             Connection connection = getConnection();
-            String query = "INSERT INTO socialjobs (description, url, `source`, `timestamp`, city) VALUES(?, ?, ?, ?);";
+            String query = "INSERT INTO socialjobs (description, url, `source`, `timestamp`, city) VALUES(?, ?, ?, ?, ?)"
+                         + "ON DUPLICATE KEY UPDATE url=url;";
             PreparedStatement prepStmt = connection.prepareStatement(query);
             
             for (Job job : jobs) 
@@ -45,7 +48,7 @@ public class ConcreteDBConnector extends DatabaseConnector
             prepStmt.close();
             connection.close();
         }
-        catch (SQLException ex) 
+        catch (Exception ex) 
         {
             Logger.getLogger(ConcreteDBConnector.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -56,7 +59,8 @@ public class ConcreteDBConnector extends DatabaseConnector
        try 
         {
             Connection connection = getConnection();
-            String query = "INSERT INTO jobs (employer, title, city, `timestamp`, url, `source`, description) VALUES(?, ?, ?, ?, ?, ?, ?);";
+            String query = "INSERT INTO jobs (employer, title, city, `timestamp`, url, `source`, description) VALUES(?, ?, ?, ?, ?, ?, ?);"
+                         + "ON DUPLICATE KEY UPDATE url=url;";
             PreparedStatement prepStmt = connection.prepareStatement(query);
             
             for (Job job : jobs) 
@@ -91,7 +95,6 @@ public class ConcreteDBConnector extends DatabaseConnector
             PreparedStatement prepStmt = connection.prepareStatement(query);
 
             prepStmt.setInt(1, limit);
-            prepStmt.setInt(2, limit);
             
             ResultSet jobResults = prepStmt.executeQuery();
             
@@ -130,7 +133,6 @@ public class ConcreteDBConnector extends DatabaseConnector
             PreparedStatement prepStmt = connection.prepareStatement(query);
 
             prepStmt.setInt(1, limit);
-            prepStmt.setInt(2, limit);
             
             ResultSet jobResults = prepStmt.executeQuery();
             
@@ -160,9 +162,33 @@ public class ConcreteDBConnector extends DatabaseConnector
         return recentJobs;
     }
     
-//    public void deleteOldJobs(int dayAge)
-//    {
-//        
-//    }
+    public boolean deleteOldJobs()
+    {
+        try 
+        {
+            Connection connection = getConnection();
+            String socialQuery       = "DELETE FROM jobseekerdb.socialjobs WHERE `timestamp` < (NOW() - INTERVAL ? DAY);";
+            String conventionalQuery = "DELETE FROM jobseekerdb.jobs       WHERE `timestamp` < (NOW() - INTERVAL ? DAY);";
+
+            PreparedStatement prepSocialStmt = connection.prepareStatement(socialQuery);
+            PreparedStatement prepConvStmt   = connection.prepareStatement(conventionalQuery);
+
+            prepSocialStmt.setInt(1, DAY_AGE_TO_DELETE);
+            prepConvStmt.setInt(1, DAY_AGE_TO_DELETE);
+
+            boolean success = prepSocialStmt.execute() && prepConvStmt.execute();
+            
+            prepSocialStmt.close();
+            prepConvStmt.close();
+            connection.close();
+            
+            return success;
+        }
+        catch (SQLException ex) 
+        {
+            Logger.getLogger(ConcreteDBConnector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
     
 }

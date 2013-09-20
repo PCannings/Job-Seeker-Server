@@ -6,25 +6,25 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 
 
-CREATE SCHEMA IF NOT EXISTS `JobSeekerDB` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+CREATE SCHEMA IF NOT EXISTS `jobseekerdb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
 
-USE `JobSeekerDB` ;
+USE `jobseekerdb` ;
 
 
-
--- -----------------------------------------------------
-
--- Table `JobSeekerDB`.`SocialJobs`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `JobSeekerDB`.`socialjobs` (
+-- Table `jobseekerdb`.`SocialJobs`
+
+-- -----------------------------------------------------
+
+CREATE  TABLE IF NOT EXISTS `jobseekerdb`.`socialjobs` (
 
   `id` INT NOT NULL AUTO_INCREMENT ,
 
   `description` TEXT NOT NULL ,
 
-  `url` VARCHAR(255) NULL ,
+  `url` VARCHAR(1000) NULL ,
 
   `source` VARCHAR(45) NOT NULL ,
 
@@ -44,11 +44,11 @@ ENGINE = InnoDB;
 
 -- -----------------------------------------------------
 
--- Table `JobSeekerDB`.`Jobs`
+-- Table `jobseekerdb`.`Jobs`
 
 -- -----------------------------------------------------
 
-CREATE  TABLE IF NOT EXISTS `JobSeekerDB`.`jobs` (
+CREATE  TABLE IF NOT EXISTS `jobseekerdb`.`jobs` (
 
   `id` INT NOT NULL AUTO_INCREMENT ,
 
@@ -62,7 +62,7 @@ CREATE  TABLE IF NOT EXISTS `JobSeekerDB`.`jobs` (
 
   `timestamp` TIMESTAMP NOT NULL ,
 
-  `url` VARCHAR(500) NULL ,
+  `url` VARCHAR(1000) NULL ,
 
   `latitude` DOUBLE NULL ,
 
@@ -84,9 +84,8 @@ CREATE  TABLE IF NOT EXISTS `JobSeekerDB`.`jobs` (
 
 ENGINE = InnoDB;
 
-ALTER TABLE `JobSeekerDB`.`socialjobs` ADD UNIQUE `url_UNIQUE` (url(50));
-ALTER TABLE `JobSeekerDB`.`jobs` ADD UNIQUE `url_UNIQUE` (url(50));
-
+ALTER TABLE jobseekerdb.socialjobs ADD UNIQUE `url_UNIQUE` (url(100));
+ALTER TABLE jobseekerdb.jobs ADD UNIQUE `url_UNIQUE` (url(100));
 
 USE `JobSeekerDB` ;
 
