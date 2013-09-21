@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package itp.team1.jobseekerserver.facebook;
+package itp.team1.jobseekerserver.sources;
 
 /**
  *

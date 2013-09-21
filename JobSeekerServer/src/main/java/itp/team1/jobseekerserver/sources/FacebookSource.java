@@ -1,4 +1,4 @@
-package itp.team1.jobseekerserver.facebook;
+package itp.team1.jobseekerserver.sources;
 
 import com.google.gson.Gson;
 import itp.team1.jobseekerserver.Job;

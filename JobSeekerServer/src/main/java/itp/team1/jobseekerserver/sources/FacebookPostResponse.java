@@ -1,4 +1,4 @@
-package itp.team1.jobseekerserver.facebook;
+package itp.team1.jobseekerserver.sources;
 
 import java.util.List;
 
