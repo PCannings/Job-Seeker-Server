@@ -12,10 +12,10 @@ public class Job implements Serializable
     private String url;
     private String source;
     private long   timestamp;
-    
     private String employer;
     private String title;
     private String city;
+    
     private double latitude;
     private double longitude;
     private String openingDate;

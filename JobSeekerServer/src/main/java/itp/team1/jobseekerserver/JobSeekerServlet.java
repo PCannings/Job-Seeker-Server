@@ -92,7 +92,7 @@ public class JobSeekerServlet extends HttpServlet
         {                
             // Search ALL sites...
             
-            if (offset == -1 && limit == -1) // Daily "BIG" update - None specified
+            if (offset == -1) // Daily "BIG" update - None specified
             {
                 // 1. Get ALL results from ALL sources
                 socialJobs.addAll(FacebookSource.retrieveAllJobs(location, limit)); // TODO: Get filters from query string
@@ -135,7 +135,7 @@ public class JobSeekerServlet extends HttpServlet
         {
             // Search Social sites only (FB, Twitter, LI, GumTree)...
             
-            if (offset == -1 && limit == -1)    // Daily "BIG" update - add to DB only
+            if (offset == -1)    // Daily "BIG" update - add to DB only
             {
                 // 1. Get ALL results from SOCIAL sources
                 socialJobs.addAll(FacebookSource.retrieveAllJobs(location, limit)); // TODO: Get filters from query string
@@ -145,6 +145,7 @@ public class JobSeekerServlet extends HttpServlet
                 database.insertSocialJobs(socialJobs);
                 
                 // TODO: Remove - Don't return results - add to database only
+                allJobListings.addAll(socialJobs);
                 //return
             }
             else if (offset == 0)   // App refresh - fetch new and get from db
@@ -169,7 +170,7 @@ public class JobSeekerServlet extends HttpServlet
         {
             // Search Job Sites sites only (Indeed, Monster, S1jobs, )...
             
-            if (offset == -1 && limit == -1)    // Daily "BIG" update - add to DB only
+            if (offset == -1)    // Daily "BIG" update - add to DB only
             {
                 // 1. Get ALL results from JOBSITE sources
                 conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location, limit)); // TODO: Get filters from query string
@@ -178,6 +179,7 @@ public class JobSeekerServlet extends HttpServlet
                 database.insertConventionalJobs(conventionalJobs);
                 
                 // TODO: Remove - Don't return results - add to database only
+                allJobListings.addAll(conventionalJobs);
                 //return
             }
             else if (offset == 0)   // App refresh - fetch new and add to db

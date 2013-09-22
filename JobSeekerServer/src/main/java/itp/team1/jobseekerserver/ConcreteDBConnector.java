@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class ConcreteDBConnector extends DatabaseConnector 
 {
-    private static final int DAY_AGE_TO_DELETE = 7;
+    private static final int DAY_AGE_TO_DELETE = 10;
     
     public ConcreteDBConnector()
     {
@@ -40,7 +40,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 prepStmt.setString(2, job.getURL());
                 prepStmt.setString(3, job.getSource());
                 prepStmt.setTimestamp(4, new Timestamp(job.getTimestamp()));
-                prepStmt.setString(5, job.getCity());
+                prepStmt.setString(5, job.getCity().toLowerCase());
 
                 prepStmt.addBatch();
             }
@@ -67,7 +67,7 @@ public class ConcreteDBConnector extends DatabaseConnector
             {
                 prepStmt.setString(1, job.getEmployer());
                 prepStmt.setString(2, job.getTitle());
-                prepStmt.setString(3, job.getCity());
+                prepStmt.setString(3, job.getCity().toLowerCase());
                 prepStmt.setTimestamp(4, new Timestamp(job.getTimestamp()));
                 prepStmt.setString(5, job.getURL());
                 prepStmt.setString(6, job.getSource());
