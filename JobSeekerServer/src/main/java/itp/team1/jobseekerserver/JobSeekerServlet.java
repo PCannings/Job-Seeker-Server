@@ -207,10 +207,10 @@ public class JobSeekerServlet extends HttpServlet
         
         // Serialise jobs to json to return
         // TODO: Add Status Message ?
-            Gson gson = new Gson();
-            String allJobsJson = "{\"jobs\":" + gson.toJson(allJobListings) + "}";
-            response.getWriter().print(allJobsJson);
-            System.gc();
+        Gson gson = new Gson();
+        String allJobsJson = "{\"jobs\":" + gson.toJson(allJobListings) + "}";
+        response.getWriter().print(allJobsJson);
+        System.gc();
     }
 
     @Override

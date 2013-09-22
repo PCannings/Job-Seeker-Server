@@ -31,7 +31,7 @@ public class ConcreteDBConnector extends DatabaseConnector
         {
             Connection connection = getConnection();
             String query = "INSERT INTO socialjobs (description, url, `source`, `timestamp`, city) VALUES(?, ?, ?, ?, ?)"
-                         + "ON DUPLICATE KEY UPDATE id=id, url=url;";
+                         + "ON DUPLICATE KEY UPDATE url=url;";
             PreparedStatement prepStmt = connection.prepareStatement(query);
             
             for (Job job : jobs) 
@@ -60,7 +60,7 @@ public class ConcreteDBConnector extends DatabaseConnector
         {
             Connection connection = getConnection();
             String query = "INSERT INTO jobs (employer, title, city, `timestamp`, url, `source`, description) VALUES(?, ?, ?, ?, ?, ?, ?);"
-                         + "ON DUPLICATE KEY UPDATE id=id, url=url;";
+                         + "ON DUPLICATE KEY UPDATE url=url;";
             PreparedStatement prepStmt = connection.prepareStatement(query);
             
             for (Job job : jobs) 
