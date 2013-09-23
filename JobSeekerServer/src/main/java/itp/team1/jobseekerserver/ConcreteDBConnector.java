@@ -87,7 +87,7 @@ public class ConcreteDBConnector extends DatabaseConnector
         }
     }
     
-    public List<Job> getRecentSocialJobs(int offset, int limit, String location, String title)
+    public List<Job> getRecentSocialJobs(int offset, int limit, String location, String keyword)
     {
         List<Job> recentJobs = new ArrayList<Job>(limit);
         try 
@@ -99,18 +99,46 @@ public class ConcreteDBConnector extends DatabaseConnector
             // Specific locations or not
             if (location.equals(""))
             {
-                query = "SELECT * FROM socialjobs GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
-                prepStmt = connection.prepareStatement(query);
-                prepStmt.setInt(1, offset);
-                prepStmt.setInt(2, limit);
+                // Search keyword or not
+                if (keyword.equals(""))
+                {
+                    query = "SELECT * FROM socialjobs GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    prepStmt = connection.prepareStatement(query);
+                    prepStmt.setInt(1, offset);
+                    prepStmt.setInt(2, limit);
+                }
+                else
+                {
+                    query = "SELECT * FROM socialjobs "
+                          + "WHERE description LIKE %?% GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    prepStmt = connection.prepareStatement(query);
+                    prepStmt.setString(1, keyword);
+                    prepStmt.setInt(2, offset);
+                    prepStmt.setInt(3, limit);
+                }
             }
             else
             {
-                query = "SELECT * FROM socialjobs WHERE city = ? GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
-                prepStmt = connection.prepareStatement(query);
-                prepStmt.setString(1, location);
-                prepStmt.setInt(2, offset);
-                prepStmt.setInt(3, limit);
+                if (keyword.equals(""))
+                {
+                    query = "SELECT * FROM socialjobs "
+                          + "WHERE city = ? GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    prepStmt = connection.prepareStatement(query);
+                    prepStmt.setString(1, location);
+                    prepStmt.setInt(2, offset);
+                    prepStmt.setInt(3, limit);
+                }
+                else
+                {
+                    query = "SELECT * FROM socialjobs "
+                          + "WHERE city = ? AND description LIKE %?% "
+                          + "GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    prepStmt = connection.prepareStatement(query);
+                    prepStmt.setString(1, location);
+                    prepStmt.setString(2, keyword);
+                    prepStmt.setInt(3, offset);
+                    prepStmt.setInt(4, limit);
+                }
             }
             
             // Execute
@@ -140,7 +168,7 @@ public class ConcreteDBConnector extends DatabaseConnector
         return recentJobs;
     }
     
-    public List<Job> getRecentConventionalJobs(int offset, int limit, String location, String title)
+    public List<Job> getRecentConventionalJobs(int offset, int limit, String location, String keyword)
     {
         List<Job> recentJobs = new ArrayList<Job>(limit);
         try 
@@ -152,18 +180,50 @@ public class ConcreteDBConnector extends DatabaseConnector
             // Specific locations or not
             if (location.equals(""))
             {
-                query = "SELECT * FROM jobs GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
-                prepStmt = connection.prepareStatement(query);
-                prepStmt.setInt(1, offset);
-                prepStmt.setInt(2, limit);
+                // Search keyword or not
+                if (keyword.equals(""))
+                {
+                    query = "SELECT * FROM jobs GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    prepStmt = connection.prepareStatement(query);
+                    prepStmt.setInt(1, offset);
+                    prepStmt.setInt(2, limit);
+                }
+                else
+                {                    
+                    query = "SELECT * FROM jobs "
+                          + "WHERE description LIKE %?% OR title LIKE %?% OR employer LIKE %?% "
+                          + "GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    prepStmt = connection.prepareStatement(query);
+                    prepStmt.setString(1, keyword);
+                    prepStmt.setString(2, keyword);
+                    prepStmt.setString(3, keyword);
+                    prepStmt.setInt(4, offset);
+                    prepStmt.setInt(5, limit);
+                }
             }
             else
-            {
-                query = "SELECT * FROM jobs WHERE city = ? GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
-                prepStmt = connection.prepareStatement(query);
-                prepStmt.setString(1, location);
-                prepStmt.setInt(2, offset);
-                prepStmt.setInt(3, limit);
+            {    
+                if (keyword.equals(""))
+                {
+                    query = "SELECT * FROM jobs WHERE city = ? GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    prepStmt = connection.prepareStatement(query);
+                    prepStmt.setString(1, location);
+                    prepStmt.setInt(2, offset);
+                    prepStmt.setInt(3, limit);
+                }
+                else
+                {   
+                    query = "SELECT * FROM jobs "
+                          + "WHERE city = ? AND (description LIKE %?% OR title LIKE %?% OR employer LIKE %?%) "
+                          + "GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    prepStmt = connection.prepareStatement(query);
+                    prepStmt.setString(1, location);
+                    prepStmt.setString(2, keyword);
+                    prepStmt.setString(3, keyword);
+                    prepStmt.setString(4, keyword);
+                    prepStmt.setInt(5, offset);
+                    prepStmt.setInt(6, limit);
+                }
             }
             
             // Execute

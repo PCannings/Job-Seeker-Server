@@ -63,7 +63,7 @@ public class JobSeekerServlet extends HttpServlet
         // Parse query params - meta + Filters etc.
         int offset      = -1;
         int limit       = -1;
-        String title    = "";
+        String keyword    = "";
         String location = "";
         String hours    = "";
         String industry = "";
@@ -73,18 +73,18 @@ public class JobSeekerServlet extends HttpServlet
         if (offsetParam != null)    offset = Integer.parseInt(offsetParam[0]);
         String[] limitParam = request.getParameterValues("limit");
         if (limitParam != null)     limit = Integer.parseInt(limitParam[0]);
-        String[] titleParams    = request.getParameterValues("title");
-        if (titleParams != null)    title = titleParams[0];
-        String[] locationParams = request.getParameterValues("location");
-        if (locationParams != null) location = locationParams[0];
-        String[] hoursParams    = request.getParameterValues("hours");
-        if (hoursParams != null)    hours = hoursParams[0];
-        String[] industryParams = request.getParameterValues("industry");
-        if (industryParams != null) industry = industryParams[0];
-        String[] employerParams = request.getParameterValues("employer");
-        if (employerParams != null) employer = employerParams[0];
-        String[] typeParams     = request.getParameterValues("type");
-        if (typeParams != null)     type = typeParams[0];
+        String[] keywordParam    = request.getParameterValues("keyword");
+        if (keywordParam != null)    keyword = (keywordParam[0] == null) ? "" : keywordParam[0];
+        String[] locationParam = request.getParameterValues("location");
+        if (locationParam != null) location = (locationParam[0] == null) ? "" : locationParam[0];
+//        String[] hoursParams    = request.getParameterValues("hours");
+//        if (hoursParams != null)    hours = hoursParams[0];
+//        String[] industryParams = request.getParameterValues("industry");
+//        if (industryParams != null) industry = industryParams[0];
+//        String[] employerParams = request.getParameterValues("employer");
+//        if (employerParams != null) employer = employerParams[0];
+//        String[] typeParams     = request.getParameterValues("type");
+//        if (typeParams != null)     type = typeParams[0];
 
         // Parse URI to implement RESTful interface...
         // TODO: Use Source superclass to iterate polymorphically over specific Source types
@@ -120,14 +120,14 @@ public class JobSeekerServlet extends HttpServlet
                 database.insertConventionalJobs(conventionalJobs);
 
                 // 3. Retrieve <limit> latest results
-                allJobListings.addAll(database.getRecentSocialJobs(offset, limit, location, title));
-                allJobListings.addAll(database.getRecentConventionalJobs(offset, limit, location, title));
+                allJobListings.addAll(database.getRecentSocialJobs(offset, limit, location, keyword));
+                allJobListings.addAll(database.getRecentConventionalJobs(offset, limit, location, keyword));
             }
             else // Fetch older results - no fetch needed - database only
             {
                 // 1. Retrieve latest <offset> - <limit> results from DB
-                allJobListings.addAll(database.getRecentSocialJobs(offset, limit, location, title));
-                allJobListings.addAll(database.getRecentConventionalJobs(offset, limit, location, title));
+                allJobListings.addAll(database.getRecentSocialJobs(offset, limit, location, keyword));
+                allJobListings.addAll(database.getRecentConventionalJobs(offset, limit, location, keyword));
 
             }
         }
@@ -158,12 +158,12 @@ public class JobSeekerServlet extends HttpServlet
                 database.insertSocialJobs(socialJobs);
                 
                 // 3. Retrieve <limit> latest results
-                allJobListings.addAll(database.getRecentSocialJobs(offset, limit, location, title));
+                allJobListings.addAll(database.getRecentSocialJobs(offset, limit, location, keyword));
             }
             else    // Old results - query DB only
             {
                 // 1. Retrieve latest <offset> - <limit> results from DB
-                allJobListings.addAll(database.getRecentSocialJobs(offset, limit, location, title));
+                allJobListings.addAll(database.getRecentSocialJobs(offset, limit, location, keyword));
             }
         }
         else if (requestURI.equals(contextPath + SEARCH_JOBSITES_STRING))
@@ -191,12 +191,12 @@ public class JobSeekerServlet extends HttpServlet
                 database.insertConventionalJobs(conventionalJobs);
                 
                 // 3. Retrieve <limit> latest results
-                allJobListings.addAll(database.getRecentConventionalJobs(offset, limit, location, title));
+                allJobListings.addAll(database.getRecentConventionalJobs(offset, limit, location, keyword));
             }
             else    // Old jobs - query DB only
             {
                 // 1. Retrieve latest <offset> - <limit> results from DB
-                allJobListings.addAll(database.getRecentConventionalJobs(offset, limit, location, title));
+                allJobListings.addAll(database.getRecentConventionalJobs(offset, limit, location, keyword));
             }        
         }
         else    // URL error
@@ -225,7 +225,7 @@ public class JobSeekerServlet extends HttpServlet
                                     "GET /search (Get JSON array of jobs from both sources)\n" +
                                     "----------------------------\n" +
                                     "Query Params:\n" +
-                                    "?location=...&hours=...&industry=...&type=...&employer=...&offset=...&limit=...");
+                                    "?location=...&keyword=...&offset=...&limit=...");
     }
 
     @Override
