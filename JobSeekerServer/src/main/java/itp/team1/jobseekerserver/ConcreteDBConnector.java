@@ -27,13 +27,13 @@ public class ConcreteDBConnector extends DatabaseConnector
     
     public void insertSocialJobs(List<Job> jobs)
     {
+
         try 
         {
             Connection connection = getConnection();
             String query = "INSERT INTO socialjobs (description, url, `source`, `timestamp`, city) VALUES(?, ?, ?, ?, ?)"
                          + "ON DUPLICATE KEY UPDATE url=url;";
             PreparedStatement prepStmt = connection.prepareStatement(query);
-            
             for (Job job : jobs) 
             {
                 prepStmt.setString(1, job.getDescription());
@@ -48,9 +48,11 @@ public class ConcreteDBConnector extends DatabaseConnector
             prepStmt.close();
             connection.close();
         }
-        catch (Exception ex) 
+        catch (SQLException ex) 
         {
             Logger.getLogger(ConcreteDBConnector.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+
         }
     }
     
@@ -59,7 +61,7 @@ public class ConcreteDBConnector extends DatabaseConnector
        try 
         {
             Connection connection = getConnection();
-            String query = "INSERT INTO jobs (employer, title, city, `timestamp`, url, `source`, description) VALUES(?, ?, ?, ?, ?, ?, ?);"
+            String query = "INSERT INTO jobs (employer, title, city, `timestamp`, url, `source`, description) VALUES(?, ?, ?, ?, ?, ?, ?) "
                          + "ON DUPLICATE KEY UPDATE url=url;";
             PreparedStatement prepStmt = connection.prepareStatement(query);
             
