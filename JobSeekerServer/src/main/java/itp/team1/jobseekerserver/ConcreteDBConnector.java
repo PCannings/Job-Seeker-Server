@@ -95,6 +95,7 @@ public class ConcreteDBConnector extends DatabaseConnector
             Connection connection = getConnection();
             String query = "";
             PreparedStatement prepStmt;
+            String keywordWildcard = "%" + keyword + "%";
 
             // Specific locations or not
             if (location.equals(""))
@@ -110,9 +111,9 @@ public class ConcreteDBConnector extends DatabaseConnector
                 else
                 {
                     query = "SELECT * FROM socialjobs "
-                          + "WHERE description LIKE %?% GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                          + "WHERE description LIKE ? GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
-                    prepStmt.setString(1, keyword);
+                    prepStmt.setString(1, keywordWildcard);
                     prepStmt.setInt(2, offset);
                     prepStmt.setInt(3, limit);
                 }
@@ -131,11 +132,11 @@ public class ConcreteDBConnector extends DatabaseConnector
                 else
                 {
                     query = "SELECT * FROM socialjobs "
-                          + "WHERE city = ? AND description LIKE %?% "
+                          + "WHERE city = ? AND description LIKE ? "
                           + "GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
                     prepStmt.setString(1, location);
-                    prepStmt.setString(2, keyword);
+                    prepStmt.setString(2, keywordWildcard);
                     prepStmt.setInt(3, offset);
                     prepStmt.setInt(4, limit);
                 }
@@ -176,7 +177,8 @@ public class ConcreteDBConnector extends DatabaseConnector
             Connection connection = getConnection();
             String query = "";
             PreparedStatement prepStmt;
-
+            String keywordWildcard = "%" + keyword + "%";
+            
             // Specific locations or not
             if (location.equals(""))
             {
@@ -191,12 +193,12 @@ public class ConcreteDBConnector extends DatabaseConnector
                 else
                 {                    
                     query = "SELECT * FROM jobs "
-                          + "WHERE description LIKE %?% OR title LIKE %?% OR employer LIKE %?% "
+                          + "WHERE description LIKE ? OR title LIKE ? OR employer LIKE ? "
                           + "GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
-                    prepStmt.setString(1, keyword);
-                    prepStmt.setString(2, keyword);
-                    prepStmt.setString(3, keyword);
+                    prepStmt.setString(1, keywordWildcard);
+                    prepStmt.setString(2, keywordWildcard);
+                    prepStmt.setString(3, keywordWildcard);
                     prepStmt.setInt(4, offset);
                     prepStmt.setInt(5, limit);
                 }
@@ -214,13 +216,13 @@ public class ConcreteDBConnector extends DatabaseConnector
                 else
                 {   
                     query = "SELECT * FROM jobs "
-                          + "WHERE city = ? AND (description LIKE %?% OR title LIKE %?% OR employer LIKE %?%) "
+                          + "WHERE city = ? AND (description LIKE ? OR title LIKE ? OR employer LIKE ?) "
                           + "GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
                     prepStmt.setString(1, location);
-                    prepStmt.setString(2, keyword);
-                    prepStmt.setString(3, keyword);
-                    prepStmt.setString(4, keyword);
+                    prepStmt.setString(2, keywordWildcard);
+                    prepStmt.setString(3, keywordWildcard);
+                    prepStmt.setString(4, keywordWildcard);
                     prepStmt.setInt(5, offset);
                     prepStmt.setInt(6, limit);
                 }
