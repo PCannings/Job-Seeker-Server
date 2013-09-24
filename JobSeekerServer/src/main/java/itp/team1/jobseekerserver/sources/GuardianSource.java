@@ -28,7 +28,7 @@ public class GuardianSource
         {
             String query = "l=" + ((location.equals("")) ? "all" : location);
                     
-            URL indeedUrl =  new URL("http://euanmorrison.co.uk/ac4/guardian/guardian.php?"+query);
+            URL indeedUrl =  new URL("http://euanmorrison.co.uk/ac4/guardian/?"+query);
             URLConnection tc = indeedUrl.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(tc.getInputStream()));
             String inputLine;

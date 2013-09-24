@@ -33,7 +33,7 @@ public class TwitterSource
             String query = "l=" + ((location.equals("")) ? "all" : location);
                     
             // url should obviously be a local location
-            URL twitterUrl = new URL("http://euanmorrison.co.uk/ac4/twitter/twitter.php?"+query);
+            URL twitterUrl = new URL("http://euanmorrison.co.uk/ac4/twitter/?"+query);
             URLConnection tc = twitterUrl.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(tc.getInputStream()));
             String inputLine;

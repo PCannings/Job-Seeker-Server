@@ -29,7 +29,7 @@ public class IndeedSource
             String query = "l=" + ((location.equals("")) ? "all" : location);
                     
             // url should obviously be a local location
-            URL indeedUrl =  new URL("http://euanmorrison.co.uk/ac4/indeed/indeed.php?"+query);
+            URL indeedUrl =  new URL("http://euanmorrison.co.uk/ac4/indeed/?"+query);
             URLConnection tc = indeedUrl.openConnection();
             BufferedReader in = new BufferedReader(new InputStreamReader(tc.getInputStream()));
             String inputLine;
