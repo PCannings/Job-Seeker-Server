@@ -107,7 +107,7 @@ public class FacebookSource
                     job.setURL(link);
                     job.setSource("facebook");
                     job.setCity(city);
-                    job.setTimestamp(post.getCreated_time());
+                    job.setUnixTimestamp(post.getCreated_time());
                     
                     // Add to list
                     jobs.add(job);

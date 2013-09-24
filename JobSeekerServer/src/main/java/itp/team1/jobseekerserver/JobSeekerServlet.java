@@ -4,6 +4,7 @@ import itp.team1.jobseekerserver.sources.FacebookSource;
 import itp.team1.jobseekerserver.sources.TwitterSource;
 
 import com.google.gson.Gson;
+import itp.team1.jobseekerserver.sources.GuardianSource;
 import itp.team1.jobseekerserver.sources.IndeedSource;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -98,6 +99,7 @@ public class JobSeekerServlet extends HttpServlet
                 socialJobs.addAll(FacebookSource.retrieveAllJobs(location, limit)); // TODO: Get filters from query string
                 socialJobs.addAll(TwitterSource.retrieveAllJobs( location, limit));
                 conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location, limit));
+                conventionalJobs.addAll(GuardianSource.retrieveAllJobs(location, limit));
                 
                 // 2. Add to DB (batch insert)
                 database.insertSocialJobs(socialJobs);
@@ -114,7 +116,8 @@ public class JobSeekerServlet extends HttpServlet
                 socialJobs.addAll(FacebookSource.retrieveAllJobs(location, limit));
                 socialJobs.addAll(TwitterSource.retrieveAllJobs(location, limit));
                 conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location, limit));
-                
+                conventionalJobs.addAll(GuardianSource.retrieveAllJobs(location, limit));
+
                 // 2. Insert to DB
                 database.insertSocialJobs(socialJobs);
                 database.insertConventionalJobs(conventionalJobs);
@@ -174,7 +177,8 @@ public class JobSeekerServlet extends HttpServlet
             {
                 // 1. Get ALL results from JOBSITE sources
                 conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location, limit)); // TODO: Get filters from query string
-                
+                conventionalJobs.addAll(GuardianSource.retrieveAllJobs(location, limit));
+
                 // 2. Add to DB (batch insert)
                 database.insertConventionalJobs(conventionalJobs);
                 
@@ -184,8 +188,9 @@ public class JobSeekerServlet extends HttpServlet
             }
             else if (offset == 0)   // App refresh - fetch new and add to db
             {
-                // 1. Get new results from SOCIAL sources
+                // 1. Get new results from JOB sources
                 conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location, limit));
+                conventionalJobs.addAll(GuardianSource.retrieveAllJobs(location, limit));
 
                 // 2. Insert to DB
                 database.insertConventionalJobs(conventionalJobs);
@@ -201,7 +206,7 @@ public class JobSeekerServlet extends HttpServlet
         }
         else    // URL error
         {
-            response.getWriter().print("{\"jobs\":[{\"error\":\"URL Malformed\"}]");
+            response.getWriter().print("{\"error\":{\"URL Malformed\"}");
             return;
         }
         

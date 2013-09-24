@@ -85,14 +85,23 @@ public class Job implements Serializable
         this.source = source;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    // RETURNS MILLIS (STORES IN SECONDS (UNIX))
+    public long getMillisTimestamp() {
+        return timestamp * 1000;    // seconds to milliseconds
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setMillisTimestamp(long timestamp) {
+        this.timestamp = timestamp / 1000;
+    }
+
+    public long getUnixTimestamp() {
+        return timestamp;    
+    }
+
+    public void setUnixTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
-
+    
     public double getLatitude() {
         return latitude;
     }
