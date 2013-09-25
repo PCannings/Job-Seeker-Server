@@ -8,10 +8,13 @@ import java.io.Serializable;
  */
 public class Job implements Serializable
 {
+    private int id;
+    
     private String description;
     private String url;
     private String source;
-    private long   timestamp;
+    private long   timestamp;   // Always STORED in UNIX Timestamp format (seconds since epoch)
+                                // Can be returned as millis from epoch (Java- and SQL-compatible)
     private String employer;
     private String title;
     private String city;
@@ -27,6 +30,18 @@ public class Job implements Serializable
     
     // -----Getters & Setters------
 
+    public Job()
+    {
+    }
+    
+    public int getId() {
+        return id;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     public String getEmployer() {
         return employer;
     }

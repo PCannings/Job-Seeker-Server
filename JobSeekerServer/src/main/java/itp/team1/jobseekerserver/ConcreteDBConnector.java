@@ -147,6 +147,7 @@ public class ConcreteDBConnector extends DatabaseConnector
             {
                 // Instantiate job
                 Job job = new Job();
+                job.setId(jobResults.getInt("id"));
                 job.setDescription(jobResults.getString("description"));
                 job.setURL(jobResults.getString("url"));
                 job.setSource(jobResults.getString("source"));
@@ -233,6 +234,7 @@ public class ConcreteDBConnector extends DatabaseConnector
             {
                 // Instantiate job
                 Job job = new Job();
+                job.setId(jobResults.getInt("id"));
                 job.setTitle(jobResults.getString("title"));
                 job.setEmployer(jobResults.getString("employer"));
                 job.setDescription(jobResults.getString("description"));
