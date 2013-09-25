@@ -13,8 +13,7 @@ public class Job implements Serializable
     private String description;
     private String url;
     private String source;
-    private long   timestamp;   // Always STORED in UNIX Timestamp format (seconds since epoch)
-                                // Can be returned as millis from epoch (Java- and SQL-compatible)
+    private long   timestamp;  
     private String employer;
     private String title;
     private String city;
@@ -100,20 +99,11 @@ public class Job implements Serializable
         this.source = source;
     }
 
-    // RETURNS MILLIS (STORES IN SECONDS (UNIX))
-    public long getMillisTimestamp() {
-        return timestamp * 1000;    // seconds to milliseconds
+    public long getTimestamp() {
+        return timestamp;
     }
-
-    public void setMillisTimestamp(long timestamp) {
-        this.timestamp = timestamp / 1000;
-    }
-
-    public long getUnixTimestamp() {
-        return timestamp;    
-    }
-
-    public void setUnixTimestamp(long timestamp) {
+    
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
     

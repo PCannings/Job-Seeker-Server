@@ -96,7 +96,10 @@ public class FacebookSource
                     Pattern pattern = Pattern.compile(LINK_REGEX);
                     Matcher matcher = pattern.matcher(postMessage);
                     while (matcher.find()) 
+                    {
                         link = matcher.group(); 
+                        postMessage = postMessage.replaceAll(link, "");
+                    }
                     link = (attachmentLink == null) ? link : attachmentLink;
 
                     if (link.equals(""))
@@ -107,7 +110,7 @@ public class FacebookSource
                     job.setURL(link);
                     job.setSource("facebook");
                     job.setCity(city);
-                    job.setUnixTimestamp(post.getCreated_time());
+                    job.setTimestamp(post.getCreated_time());
                     
                     // Add to list
                     jobs.add(job);

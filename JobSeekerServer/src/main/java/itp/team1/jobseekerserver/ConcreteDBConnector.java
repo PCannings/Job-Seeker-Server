@@ -39,7 +39,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 prepStmt.setString(1, job.getDescription());
                 prepStmt.setString(2, job.getURL());
                 prepStmt.setString(3, job.getSource());
-                prepStmt.setTimestamp(4, new Timestamp(job.getMillisTimestamp()));
+                prepStmt.setTimestamp(4, new Timestamp(job.getTimestamp() * 1000));
                 prepStmt.setString(5, job.getCity().toLowerCase());
 
                 prepStmt.addBatch();
@@ -68,7 +68,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 prepStmt.setString(1, job.getEmployer());
                 prepStmt.setString(2, job.getTitle());
                 prepStmt.setString(3, job.getCity().toLowerCase());
-                prepStmt.setTimestamp(4, new Timestamp(job.getMillisTimestamp()));
+                prepStmt.setTimestamp(4, new Timestamp(job.getTimestamp() * 1000));
                 prepStmt.setString(5, job.getURL());
                 prepStmt.setString(6, job.getSource());
                 prepStmt.setString(7, job.getDescription());
@@ -151,7 +151,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 job.setDescription(jobResults.getString("description"));
                 job.setURL(jobResults.getString("url"));
                 job.setSource(jobResults.getString("source"));
-                job.setMillisTimestamp(jobResults.getTimestamp("timestamp").getTime());
+                job.setTimestamp(jobResults.getTimestamp("timestamp").getTime());
                 job.setCity(jobResults.getString("city"));
                 
                 // Add to list
@@ -240,7 +240,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 job.setDescription(jobResults.getString("description"));
                 job.setURL(jobResults.getString("url"));
                 job.setSource(jobResults.getString("source"));
-                job.setMillisTimestamp(jobResults.getTimestamp("timestamp").getTime());
+                job.setTimestamp(jobResults.getTimestamp("timestamp").getTime());
                 job.setCity(jobResults.getString("city"));
                 
                 // Add to list
