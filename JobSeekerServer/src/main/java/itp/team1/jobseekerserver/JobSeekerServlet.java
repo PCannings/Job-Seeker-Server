@@ -6,6 +6,7 @@ import itp.team1.jobseekerserver.sources.TwitterSource;
 import com.google.gson.Gson;
 import itp.team1.jobseekerserver.sources.GuardianSource;
 import itp.team1.jobseekerserver.sources.IndeedSource;
+import itp.team1.jobseekerserver.sources.YagaSource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +101,7 @@ public class JobSeekerServlet extends HttpServlet
                 socialJobs.addAll(TwitterSource.retrieveAllJobs( location, limit));
                 conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location, limit));
                 conventionalJobs.addAll(GuardianSource.retrieveAllJobs(location, limit));
+                conventionalJobs.addAll(YagaSource.retrieveAllJobs(location, limit));   // Only add Yaga for daily update.  Limited API calls.
                 
                 // 2. Add to DB (batch insert)
                 database.insertSocialJobs(socialJobs);
