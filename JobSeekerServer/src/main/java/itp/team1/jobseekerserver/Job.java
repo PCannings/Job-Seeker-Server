@@ -18,6 +18,7 @@ public class Job implements Serializable
     private String title;
     private String city;
     
+    private double salary;
     private double latitude;
     private double longitude;
     private String openingDate;
@@ -162,6 +163,15 @@ public class Job implements Serializable
     public void setType(String type) {
         this.type = type;
     }
+
+    public double getSalary() {
+        return salary;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
+    }
+    
     
     
 }
