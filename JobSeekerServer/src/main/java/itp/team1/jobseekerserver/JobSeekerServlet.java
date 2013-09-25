@@ -243,6 +243,10 @@ public class JobSeekerServlet extends HttpServlet
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException 
     {
+        // Calls SQL script to delete old jobs
+        ConcreteDBConnector database = new ConcreteDBConnector();
+        
+        database.deleteOldJobs();
     }
 
 
