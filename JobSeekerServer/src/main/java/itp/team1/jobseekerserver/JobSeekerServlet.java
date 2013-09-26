@@ -118,7 +118,6 @@ public class JobSeekerServlet extends HttpServlet
                 socialJobs.addAll(FacebookSource.retrieveAllJobs(location, limit));
                 socialJobs.addAll(TwitterSource.retrieveAllJobs(location, limit));
                 conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location, limit));
-                conventionalJobs.addAll(GuardianSource.retrieveAllJobs(location, limit));
 
                 // 2. Insert to DB
                 database.insertSocialJobs(socialJobs);
@@ -179,7 +178,6 @@ public class JobSeekerServlet extends HttpServlet
             {
                 // 1. Get ALL results from JOBSITE sources
                 conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location, limit)); // TODO: Get filters from query string
-                conventionalJobs.addAll(GuardianSource.retrieveAllJobs(location, limit));
 
                 // 2. Add to DB (batch insert)
                 database.insertConventionalJobs(conventionalJobs);
@@ -192,7 +190,6 @@ public class JobSeekerServlet extends HttpServlet
             {
                 // 1. Get new results from JOB sources
                 conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location, limit));
-                conventionalJobs.addAll(GuardianSource.retrieveAllJobs(location, limit));
 
                 // 2. Insert to DB
                 database.insertConventionalJobs(conventionalJobs);
