@@ -107,10 +107,9 @@ public class JobSeekerServlet extends HttpServlet
                 database.insertSocialJobs(socialJobs);
                 database.insertConventionalJobs(conventionalJobs);
                 
-                //TODO: remove
-                allJobListings.addAll(socialJobs);
-                allJobListings.addAll(conventionalJobs);
-                //return; // Don't return any jobs to client
+//                allJobListings.addAll(socialJobs);
+//                allJobListings.addAll(conventionalJobs);
+                return; // Don't return any jobs to client
             }
             else if (offset == 0) // App refresh
             {
@@ -148,9 +147,9 @@ public class JobSeekerServlet extends HttpServlet
                 // 2. Add to DB (batch insert)
                 database.insertSocialJobs(socialJobs);
                 
-                // TODO: Remove - Don't return results - add to database only
-                allJobListings.addAll(socialJobs);
-                //return
+                // Don't return results - add to database only
+//                allJobListings.addAll(socialJobs);
+                return;
             }
             else if (offset == 0)   // App refresh - fetch new and get from db
             {
@@ -178,13 +177,15 @@ public class JobSeekerServlet extends HttpServlet
             {
                 // 1. Get ALL results from JOBSITE sources
                 conventionalJobs.addAll(IndeedSource.retrieveAllJobs(location, limit)); // TODO: Get filters from query string
+                conventionalJobs.addAll(GuardianSource.retrieveAllJobs(location, limit));
+                conventionalJobs.addAll(YagaSource.retrieveAllJobs(location, limit));   // Only add Yaga for daily update.  Limited API calls.
 
                 // 2. Add to DB (batch insert)
                 database.insertConventionalJobs(conventionalJobs);
                 
-                // TODO: Remove - Don't return results - add to database only
-                allJobListings.addAll(conventionalJobs);
-                //return
+                // Don't return results - add to database only
+//                allJobListings.addAll(conventionalJobs);
+                return;
             }
             else if (offset == 0)   // App refresh - fetch new and add to db
             {
@@ -225,7 +226,7 @@ public class JobSeekerServlet extends HttpServlet
         response.getWriter().println("RESTful API:\n" +
                                     "---------------------------\n" +
                                     "GET /search/social (Get JSON array of jobs from social feeds [FB, Twitter]\n" +
-                                    "GET /search/jobsites (Get JSON array of jobs from job sites [Indeed]\n" +
+                                    "GET /search/jobsites (Get JSON array of jobs from job sites [Indeed, Guardian, S1]\n" +
                                     "GET /search (Get JSON array of jobs from both sources)\n" +
                                     "----------------------------\n" +
                                     "Query Params:\n" +
