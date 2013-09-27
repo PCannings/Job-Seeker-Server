@@ -102,7 +102,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 if (keyword.equals(""))
                 {
                     // TODO: Replace "url" with "SUBSTRING(description, 1, 20)"
-                    query = "SELECT * FROM socialjobs GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    query = "SELECT * FROM socialjobs GROUP BY(SUBSTRING(description, 1, 20)) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
                     prepStmt.setInt(1, offset);
                     prepStmt.setInt(2, limit);
@@ -110,7 +110,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 else
                 {
                     query = "SELECT * FROM socialjobs "
-                          + "WHERE description LIKE ? GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                          + "WHERE description LIKE ? GROUP BY(SUBSTRING(description, 1, 20)) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
                     prepStmt.setString(1, keywordWildcard);
                     prepStmt.setInt(2, offset);
@@ -122,7 +122,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 if (keyword.equals(""))
                 {
                     query = "SELECT * FROM socialjobs "
-                          + "WHERE city = ? GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                          + "WHERE city = ? GROUP BY(SUBSTRING(description, 1, 20)) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
                     prepStmt.setString(1, location);
                     prepStmt.setInt(2, offset);
@@ -132,7 +132,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 {
                     query = "SELECT * FROM socialjobs "
                           + "WHERE city = ? AND description LIKE ? "
-                          + "GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                          + "GROUP BY(SUBSTRING(description, 1, 20)) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
                     prepStmt.setString(1, location);
                     prepStmt.setString(2, keywordWildcard);
@@ -185,7 +185,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 // Search keyword or not
                 if (keyword.equals(""))
                 {
-                    query = "SELECT * FROM jobs GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    query = "SELECT * FROM jobs GROUP BY(SUBSTRING(description, 1, 20)) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
                     prepStmt.setInt(1, offset);
                     prepStmt.setInt(2, limit);
@@ -194,7 +194,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 {                    
                     query = "SELECT * FROM jobs "
                           + "WHERE description LIKE ? OR title LIKE ? OR employer LIKE ? "
-                          + "GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                          + "GROUP BY(SUBSTRING(description, 1, 20)) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
                     prepStmt.setString(1, keywordWildcard);
                     prepStmt.setString(2, keywordWildcard);
@@ -207,7 +207,7 @@ public class ConcreteDBConnector extends DatabaseConnector
             {    
                 if (keyword.equals(""))
                 {
-                    query = "SELECT * FROM jobs WHERE city = ? GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                    query = "SELECT * FROM jobs WHERE city = ? GROUP BY(SUBSTRING(description, 1, 20)) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
                     prepStmt.setString(1, location);
                     prepStmt.setInt(2, offset);
@@ -217,7 +217,7 @@ public class ConcreteDBConnector extends DatabaseConnector
                 {   
                     query = "SELECT * FROM jobs "
                           + "WHERE city = ? AND (description LIKE ? OR title LIKE ? OR employer LIKE ?) "
-                          + "GROUP BY(url) ORDER BY `timestamp` DESC LIMIT ?,?;";
+                          + "GROUP BY(SUBSTRING(description, 1, 20)) ORDER BY `timestamp` DESC LIMIT ?,?;";
                     prepStmt = connection.prepareStatement(query);
                     prepStmt.setString(1, location);
                     prepStmt.setString(2, keywordWildcard);

@@ -87,7 +87,7 @@ public class JobSeekerServlet extends HttpServlet
 //        if (employerParams != null) employer = employerParams[0];
 //        String[] typeParams     = request.getParameterValues("type");
 //        if (typeParams != null)     type = typeParams[0];
-
+        
         // Parse URI to implement RESTful interface...
         // TODO: Use Source superclass to iterate polymorphically over specific Source types
         if (requestURI.equals(contextPath + SEARCH_ALL_STRING))
@@ -136,6 +136,7 @@ public class JobSeekerServlet extends HttpServlet
         }
         else if (requestURI.equals(contextPath + SEARCH_SOCIAL_STRING))
         {
+            ++offset;
             // Search Social sites only (FB, Twitter, LI, GumTree)...
             
             if (offset == -1)    // Daily "BIG" update - add to DB only
