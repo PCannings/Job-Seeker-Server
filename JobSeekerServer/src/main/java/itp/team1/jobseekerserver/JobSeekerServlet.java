@@ -136,7 +136,8 @@ public class JobSeekerServlet extends HttpServlet
         }
         else if (requestURI.equals(contextPath + SEARCH_SOCIAL_STRING))
         {
-            ++offset;
+            // TODO: New Source hack - in or out.
+//            ++offset;
             // Search Social sites only (FB, Twitter, LI, GumTree)...
             
             if (offset == -1)    // Daily "BIG" update - add to DB only
